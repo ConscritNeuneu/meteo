@@ -26,10 +26,13 @@ module Meteo
       radar_file = get_radar_info(time)
       if radar_file
         output_file = Tempfile.new(['rain', '.pbm'], :encoding => 'ascii-8bit')
-        output_file.close
         ret = system("convert #{File.dirname(__FILE__)}/ile_de_france.png #{radar_file} -composite -dither Riemersma -monochrome #{output_file.path}")
         if ret
-          print_image(output_file.path)
+          output_file.rewind
+          output_pbm = output_file.read
+          output_file.close
+
+          print_image(output_pbm)
         end
       end
     end
