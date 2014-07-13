@@ -33,5 +33,13 @@ module Meteo
         end
       end
     end
+
+    def get_last_radar_image
+      time = Time.now - (900)
+      time = time - time.tv_sec % (900)
+
+      out = (ESC_POS_CENTER + ESC_POS_CP_1252 + "Radar des pluies \u00e0 #{time}\n".encode(Encoding::WINDOWS_1252)).force_encoding(Encoding::ASCII_8BIT)
+      out + construct_image(time)
+    end
   end
 end
