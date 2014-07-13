@@ -1,0 +1,2 @@
+convert staticmap.png 49.5.1.5.20131028.0115.eu.gif -composite -dither Riemersma -monochrome ploum.pbm
+http://www2.buienradar.nl/zoomeu.php?lon=2&lat=49
