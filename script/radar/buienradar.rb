@@ -1,24 +1,13 @@
 require "RMagick"
-require "net/http"
 
 module Meteo
   module Radar
     include Lib
     include Magick
 
-    def get_radar(time)
-      uri = URI.parse("http://www2.buienradar.nl/zoomin/49.5.1.5.#{"%d%02d%02d.%02d%02d" % [time.year, time.month, time.day, time.hour, time.min]}.eu.gif")
-      http = Net::HTTP.new(uri.host, uri.port)
-      request = Net::HTTP::Get.new(uri.request_uri)
-      response = http.request(request)
-
-      if response.code == '200'
-        response.body
-      end
-    end
-
     def construct_image(time)
-      radar_data = get_radar(time)
+      url = "http://www2.buienradar.nl/zoomin/49.5.1.5.#{"%d%02d%02d.%02d%02d" % [time.year, time.month, time.day, time.hour, time.min]}.eu.gif"
+      radar_data = get_url(url)
       if radar_data
         radar = Image.from_blob(radar_data).first
         idf = ImageList.new("#{File.dirname(__FILE__)}/ile_de_france.png").first
