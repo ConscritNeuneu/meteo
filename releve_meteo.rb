@@ -2,10 +2,13 @@ require "tempfile"
 
 require "./script/meteo"
 
+include Meteo::Forecast
 include Meteo::Radar
 include Meteo::TempChart
 
 file = Tempfile.new(["meteo", ".img"], :encoding => "ascii-8bit")
+file.write(get_forecast)
+file.write("-" * 48 + "\n")
 file.write(get_last_radar_image)
 file.write("-" * 48 + "\n")
 file.write(get_last_temp_chart)
