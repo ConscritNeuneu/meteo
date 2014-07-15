@@ -2,8 +2,7 @@ module Meteo
   module Lib
     class Bitmap
       def initialize(chars, width, height)
-        @width, @height = width, height
-        @chars = chars.slice(0, (width * height + 7) / 8)
+        @chars, @width, @height = chars, width, height
       end
 
       def bit(x, y)
