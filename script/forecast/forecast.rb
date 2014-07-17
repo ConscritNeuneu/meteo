@@ -15,15 +15,16 @@ module Meteo
         maj = dates.xpath(".//span[@class='miseajour'][1]").first.text.strip
 
         previsions = xml.xpath("//div[@id='table_prevision'][1]").first
-        titles = previsions.xpath('table/tr[1]/th/div').map(&:text).slice(0, 4)
-        pictos = previsions.xpath('table/tr[2]//img').map { |node| node.attribute("src").value.sub(/.*\//, "") }.slice(0, 4)
-        temps = previsions.xpath('table/tr[3]//div').map { |node| node.children.first.text.strip }.slice(0, 4)
+        titles = previsions.xpath('table/tr[1]/th/div').slice(0, 4).map(&:text)
+        pictos = previsions.xpath('table/tr[2]//img').slice(0, 4).map { |node| node.attribute("src").value.sub(/.*\//, "") }
+        temps = previsions.xpath('table/tr[3]//div').slice(0, 4).map { |node| [0, 3].map { |i| node.children[i].text.strip } }
         text = previsions.xpath('table/tr[4]//p').first.text
 
         {
           :titles => titles,
           :pictos => pictos,
-          :temps => temps,
+          :temps => temps.map { |t| t[0] },
+          :old_temps => temps.map { |t| t[1] },
           :text => text,
           :date => date,
           :maj => maj
@@ -81,10 +82,10 @@ module Meteo
           [[0, 1], [2, 3]].map do |group|
             moments = align_words(*(group.map { |i| data[:titles][i] }))
 
-            temps = align_words(*(group.map { |i| data[:temps][i] }))
+            temps, old_temps = [:temps, :old_temps].map { |k| align_words(*(group.map { |i| data[k][i] })) }
 
             pictos = group.map { |i| ImageList.new(File.dirname(__FILE__) + "/assets/" + data[:pictos][i]).first }
-              .map { |img| img.change_geometry("200") { |cols, rows, img| img.resize(cols, rows) } }
+              .map { |img| img.change_geometry("200") { |cols, rows, img_| img_.resize(cols, rows) } }
 
             resulting_image = compose_pictos(*pictos)
               .threshold(0.70 * MaxRGB).quantize(2)
@@ -95,7 +96,8 @@ module Meteo
               ESC_POS_CP_1252,
               encode_1252(moments) + "\n",
               print_image(resulting_image.to_blob),
-              encode_1252(temps) + "\n"
+              encode_1252(temps) + "\n",
+              encode_1252(old_temps) + "\n"
             ].join
           end.join("-" * (3 * ESC_POS_LINE_LENGTH / 4) + "\n")
         ].join
