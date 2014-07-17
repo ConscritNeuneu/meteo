@@ -17,7 +17,12 @@ module Meteo
         previsions = xml.xpath("//div[@id='table_prevision'][1]").first
         titles = previsions.xpath('table/tr[1]/th/div').slice(0, 4).map(&:text)
         pictos = previsions.xpath('table/tr[2]//img').slice(0, 4).map { |node| node.attribute("src").value.sub(/.*\//, "") }
-        temps = previsions.xpath('table/tr[3]//div').slice(0, 4).map { |node| [0, 3].map { |i| node.children[i].text.strip } }
+        temps = previsions.xpath('table/tr[3]//div').slice(0, 4).map do |node|
+          [
+            node.children.first.text.strip,
+            node.xpath('span').text.strip
+          ]
+        end
         text = previsions.xpath('table/tr[4]//p').first.text
 
         {
