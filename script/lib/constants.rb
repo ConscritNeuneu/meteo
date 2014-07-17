@@ -2,6 +2,7 @@ module Meteo
   module Lib
 
     ESC_POS_LINE_LENGTH = 48
+    ESC_POS_LINE_LENGTH_B = 64
     ESC_POS_PIXELS = 576
 
     ESC_POS_INIT = "\e@"

@@ -54,8 +54,8 @@ module Meteo
       list.mosaic
     end
 
-    def align_words(*words) 
-      size_by_word = ESC_POS_LINE_LENGTH / words.length
+    def align_words(words, length = ESC_POS_LINE_LENGTH)
+      size_by_word = length / words.length
 
       words.map do |word|
         left = " " * ((size_by_word - word.length) / 2) + word
@@ -85,9 +85,10 @@ module Meteo
           ESC_POS_CENTER,
           "-" * (3 * ESC_POS_LINE_LENGTH / 4) + "\n",
           [[0, 1], [2, 3]].map do |group|
-            moments = align_words(*(group.map { |i| data[:titles][i] }))
+            moments = align_words(group.map { |i| data[:titles][i] })
 
-            temps, old_temps = [:temps, :old_temps].map { |k| align_words(*(group.map { |i| data[k][i] })) }
+            temps = align_words(group.map { |i| data[:temps][i] })
+            old_temps = align_words(group.map { |i| data[:old_temps][i] }, ESC_POS_LINE_LENGTH_B)
 
             pictos = group.map { |i| ImageList.new(File.dirname(__FILE__) + "/assets/" + data[:pictos][i]).first }
               .map { |img| img.change_geometry("200") { |cols, rows, img_| img_.resize(cols, rows) } }
@@ -98,11 +99,12 @@ module Meteo
 
             [
               ESC_POS_CENTER,
-              ESC_POS_CP_1252,
               encode_1252(moments) + "\n",
               print_image(resulting_image.to_blob),
               encode_1252(temps) + "\n",
-              encode_1252(old_temps) + "\n"
+              ESC_POS_FONT_B,
+              encode_1252(old_temps) + "\n",
+              ESC_POS_FONT_A
             ].join
           end.join("-" * (3 * ESC_POS_LINE_LENGTH / 4) + "\n")
         ].join
