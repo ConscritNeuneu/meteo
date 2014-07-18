@@ -14,7 +14,7 @@ module Meteo
         end.threshold(0.70 * MaxRGB).quantize(2)
         pbm_chart.format = "PBM"
 
-        out = ESC_POS_CENTER + ESC_POS_CP_1252 + encode_1252("Derniers relev\u00E9s de temperature\n")
+        out = ESC_POS_CENTER + encode_1252("Derniers relev\u00E9s de temperature\n")
         out + print_image(pbm_chart.to_blob)
       end
     end

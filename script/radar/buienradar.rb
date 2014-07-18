@@ -21,7 +21,7 @@ module Meteo
       time = Time.now - (900)
       time = time - time.tv_sec % (900)
 
-      out = ESC_POS_CENTER + ESC_POS_CP_1252 + encode_1252("Radar des pluies \u00e0 #{time}\n")
+      out = ESC_POS_CENTER + encode_1252("Radar des pluies \u00e0 #{time}\n")
       out + construct_image(time)
     end
   end
