@@ -9,6 +9,7 @@ include Meteo::TempChart
 def releve_meteo
   [
     ESC_POS_INIT,
+    ESC_POS_CENTER,
     get_forecast,
     "-" * 48 + "\n",
     get_last_radar_image,

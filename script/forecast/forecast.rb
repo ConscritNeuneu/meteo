@@ -72,7 +72,6 @@ module Meteo
       data = fetch_previsions
       if data
         [
-          ESC_POS_CENTER,
           ESC_POS_EMPH,
           encode_1252("BULLETIN DU #{data[:date]}\n"),
           ESC_POS_NORM,
@@ -98,7 +97,6 @@ module Meteo
             resulting_image.format = "PBM"
 
             [
-              ESC_POS_CENTER,
               encode_1252(moments) + "\n",
               print_image(resulting_image.to_blob),
               encode_1252(temps) + "\n",
