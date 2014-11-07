@@ -19,7 +19,6 @@ def releve_meteo
   ].join
 end
 
-
 File.open("/dev/usb/lp0", "wb") do |printer|
   printer.write(releve_meteo)
 end
