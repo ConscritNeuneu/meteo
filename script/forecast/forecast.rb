@@ -10,20 +10,20 @@ module Meteo
       meteo_paris = get_url("http://www.meteo-paris.com/")
       if meteo_paris
         xml = Nokogiri::HTML.parse(meteo_paris).remove_namespaces!
-        dates = xml.xpath("//div[@id='table_ephem'][1]").first
-        date = dates.xpath(".//span[@class='date'][1]").first.text
-        maj = dates.xpath(".//span[@class='miseajour'][1]").first.text.strip
+        site = xml.xpath("//div[@id='site'][1]").first
+        maj = site.xpath(".//div[@class='site_prevision_bloc_miseajour'][1]").first.text.strip
 
-        previsions = xml.xpath("//div[@id='table_prevision'][1]").first
-        titles = previsions.xpath('table/tr[1]/th/div').slice(0, 4).map(&:text)
-        pictos = previsions.xpath('table/tr[2]//img').slice(0, 4).map { |node| node.attribute("src").value.sub(/.*\//, "") }
-        temps = previsions.xpath('table/tr[3]//div').slice(0, 4).map do |node|
+        previsions = site.xpath(".//div[@id='table_prevision'][1]").first
+        date = previsions.xpath("table/tr[1]/td/div[@class='prevision_date_jour']").first.text.strip
+        titles = previsions.xpath('table/tr[2]/th/div').slice(0, 4).map(&:text)
+        pictos = previsions.xpath('table/tr[3]//img').slice(0, 4).map { |node| node.attribute("src").value.sub(/.*\//, "") }
+        temps = previsions.xpath('table/tr[4]//div').slice(0, 4).map do |node|
           [
             node.children.first.text.strip,
             node.xpath('span').text.strip
           ]
         end
-        text = previsions.xpath('table/tr[4]//p').first.text
+        text = previsions.xpath('table/tr[5]//p').first.text
 
         {
           :titles => titles,
