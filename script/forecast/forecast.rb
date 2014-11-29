@@ -13,23 +13,25 @@ module Meteo
         site = xml.xpath("//div[@id='site'][1]").first
         maj = site.xpath(".//div[@class='site_prevision_bloc_miseajour'][1]").first.text.strip
 
-        previsions = site.xpath(".//div[@id='table_prevision'][1]").first
-        date = previsions.xpath("table/tr[1]/td/div[@class='prevision_date_jour']").first.text.strip
-        titles = previsions.xpath('table/tr[2]/th/div').slice(0, 4).map(&:text)
-        pictos = previsions.xpath('table/tr[3]//img').slice(0, 4).map { |node| node.attribute("src").value.sub(/.*\//, "") }
-        temps = previsions.xpath('table/tr[4]//div').slice(0, 4).map do |node|
-          [
-            node.children.first.text.strip,
-            node.xpath('span').text.strip
-          ]
+        previsions = site.xpath(".//div[@id='prevision'][1]").first
+        date = previsions.xpath(".//span[@id='date_accueil'][2]").first.text.strip
+        cases = previsions.xpath("./div[@class='ac_picto_ensemble']").map do |case_prev|
+          temps = case_prev.xpath("div[@class='ac_temp']").first.children
+
+          {
+            :title => case_prev.xpath("div[@class='ac_etiquette']/img").first.attribute("src").value.sub(/.*\//, "").sub(/\.jpg/, "").capitalize,
+            :picto => case_prev.xpath("div[@class='ac_picto']/img").first.attribute("src").value.sub(/.*\//, ""),
+            :temp => temps.first.text.strip,
+            :old_temp => temps.last.text.strip,
+          }
         end
-        text = previsions.xpath('table/tr[5]//p').first.text
+        text = previsions.xpath("div[@class='ac_com']").first.text.strip
 
         {
-          :titles => titles,
-          :pictos => pictos,
-          :temps => temps.map { |t| t[0] },
-          :old_temps => temps.map { |t| t[1] },
+          :titles => cases.map { |c| c[:title] },
+          :pictos => cases.map { |c| c[:picto] },
+          :temps => cases.map { |c| c[:temp] },
+          :old_temps => cases.map { |c| c[:old_temp] },
           :text => text,
           :date => date,
           :maj => maj
