@@ -1,6 +1,6 @@
 require "tempfile"
 
-require "./script/meteo"
+require_relative "script/meteo"
 
 include Meteo::Forecast
 include Meteo::Radar
