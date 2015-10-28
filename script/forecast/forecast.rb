@@ -15,15 +15,15 @@ module Meteo
 
         previsions = site.xpath(".//div[@id='prevision'][1]").first
         date = previsions.xpath(".//span[@id='date_accueil'][2]").first.text.strip
-        cases = previsions.xpath("./div[@class='ac_picto_ensemble']").map do |case_prev|
+        cases = previsions.xpath(".//div[@class='ac_picto_ensemble']").map do |case_prev|
           {
-            :title => case_prev.xpath("div[@class='ac_etiquette']/img").first.attribute("src").value.sub(/.*\//, "").sub(/\.jpg/, "").capitalize,
+            :title => case_prev.xpath("div[@class='ac_etiquette']").text,
             :picto => case_prev.xpath("div[@class='ac_picto']/img").first.attribute("src").value.sub(/.*\//, ""),
             :temp => case_prev.xpath("div[@class='ac_temp']").first.children.first.text.strip,
             :old_temp => case_prev.xpath("div/span[@class='temperature_hier']").text,
           }
         end
-        text = previsions.xpath("div[@class='ac_com']").first.text.strip
+        text = previsions.xpath(".//div[@class='ac_com']").first.text.strip
 
         {
           :titles => cases.map { |c| c[:title] },
