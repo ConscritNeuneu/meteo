@@ -18,7 +18,7 @@ module Meteo
         cases = previsions.xpath(".//div[@class='ac_picto_ensemble']").map do |case_prev|
           {
             :title => case_prev.xpath("div[@class='ac_etiquette']").text,
-            :picto => case_prev.xpath("div[@class='ac_picto']/img").first.attribute("src").value.sub(/.*\//, ""),
+            :picto => case_prev.xpath("div[@class='ac_picto']/img").first.attribute("src").value.sub(/.*\/(.*)\..*/, '\1'),
             :temp => case_prev.xpath("div[@class='ac_temp']").first.children.first.text.strip,
             :old_temp => case_prev.xpath("div/span[@class='temperature_hier']").text,
           }
@@ -89,7 +89,7 @@ module Meteo
             temps = align_words(group.map { |i| data[:temps][i] })
             old_temps = align_words(group.map { |i| data[:old_temps][i] }, ESC_POS_LINE_LENGTH_B)
 
-            pictos = group.map { |i| ImageList.new(File.dirname(__FILE__) + "/assets/" + data[:pictos][i]).first }
+            pictos = group.map { |i| ImageList.new(File.dirname(__FILE__) + "/assets/" + data[:pictos][i] + ".png").first }
               .map { |img| img.change_geometry("200") { |cols, rows, img_| img_.resize(cols, rows) } }
 
             resulting_image = compose_pictos(*pictos)
