@@ -19,8 +19,8 @@ module Meteo
           {
             :title => case_prev.xpath("div[@class='ac_etiquette']").text,
             :picto => case_prev.xpath("div[@class='ac_picto']/img").first.attribute("src").value.sub(/.*\/(.*)\..*/, '\1'),
-            :temp => case_prev.xpath("div[@class='ac_temp']").first.children.first.text.strip,
-            :old_temp => case_prev.xpath("div/span[@class='temperature_hier']").text,
+            :temp => case_prev.xpath("div[@class='ac_temp']").first.children.first.text.strip + "\u00B0 C",
+            :old_temp => case_prev.xpath("span[@class='temperature_hier']").text,
           }
         end
         text = previsions.xpath(".//div[@class='ac_com']").first.text.strip
