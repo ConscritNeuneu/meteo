@@ -93,7 +93,7 @@ module Meteo
               .map { |img| img.change_geometry("200") { |cols, rows, img_| img_.resize(cols, rows) } }
 
             resulting_image = compose_pictos(*pictos)
-              .threshold(0.60 * MaxRGB).quantize(2)
+              .threshold(0.60 * QuantumRange).quantize(2)
             resulting_image.format = "PBM"
 
             [

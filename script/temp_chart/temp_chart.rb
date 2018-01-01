@@ -11,7 +11,7 @@ module Meteo
         # 576 pixels max
         pbm_chart = Image.from_blob(chart_gif).first.change_geometry("480") do |cols, rows, img|
           img.resize(cols, rows)
-        end.threshold(0.70 * MaxRGB).quantize(2)
+        end.threshold(0.70 * QuantumRange).quantize(2)
         pbm_chart.format = "PBM"
 
         out = encode_1252("Derniers relev\u00E9s de temperature\n")
