@@ -1,4 +1,4 @@
-require "RMagick"
+require "rmagick"
 
 module Meteo
   module Header
